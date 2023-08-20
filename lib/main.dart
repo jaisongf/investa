@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       statusBarIconBrightness: Brightness.dark,
     ));
     return MaterialApp(
-      title: 'Wash App',
+      title: 'Investa Trading App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         textTheme: Constant.textTheme,

@@ -4,6 +4,9 @@ import '../../config/constant.dart';
 import '../../widgets/common-textfield.dart';
 import '../../widgets/heading_six.dart';
 
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 class PortfolioScreen extends StatefulWidget {
   PortfolioScreen({Key? key}) : super(key: key);
 
@@ -12,32 +15,37 @@ class PortfolioScreen extends StatefulWidget {
 }
 
 class _PortfolioScreenState extends State<PortfolioScreen> {
-  final List<Map<String, String>> deliveryStatus = [
-    {
-      "heading": "CRM",
-      "avatar": "assets/saleForce_ic.jpg",
-      "subHeading": "192.5",
-      "headingSub": "SaleForce Inc",
-    },
-    {
-      "heading": "MMD",
-      "avatar": "assets/axaio.png",
-      "subHeading": "160.2",
-      "headingSub": "Salerce Inc",
-    },
-    {
-      "heading": "HD",
-      "avatar": "assets/computools_logo.png",
-      "subHeading": "180.25",
-      "headingSub": "SaleForce Inc",
-    },
-    {
-      "heading": "DM",
-      "avatar": "assets/dataTech_logo.png",
-      "subHeading": "241.10",
-      "headingSub": "SaleForce Inc",
+
+    List<dynamic> stockDataList = [];
+
+    Future<void> fetchData() async {
+    final response = await http.get(Uri.parse('https://eu-west-2.aws.data.mongodb-api.com/app/data-efxfb/endpoint/investa_mongodb_get_stocks?apiKey=2b1b02b0a6b64bc9b817cfd414148795'));
+    if (response.statusCode == 200) {
+      setState(() {
+        //dataList = json.decode(response.body);
+
+        List<Map<String, dynamic>> jsonStockDataList = List<Map<String, dynamic>>.from(json.decode(response.body));
+
+        List<Map<String, String>> convertedStockDataList = jsonStockDataList.map((map) {
+          return map.map((key, value) => MapEntry(key, value.toString()));
+        }).toList();
+
+        print('Data fetching data: ${convertedStockDataList}'); 
+        stockDataList = convertedStockDataList;
+      });
+    } else {
+      // Handle error
+      print('Error fetching data: ${response.statusCode}');
     }
-  ];
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+
   Widget _statusCompleted(String? heading, String? avatar, String? subHeading,
       String? headingSub, double? containerWidth) {
     return Container(
@@ -59,7 +67,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
               Container(
                   child: CircleAvatar(
                 radius: 20,
-                backgroundImage: AssetImage(avatar!),
+                backgroundImage: NetworkImage(avatar!),
               )),
               SizedBox(width: 16),
               Column(
@@ -157,11 +165,12 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
         child: ListView.builder(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.only(top: 8, bottom: 0),
-            itemCount: deliveryStatus.length,
+            itemCount: stockDataList.length,
             itemBuilder: (context, index) {
-              final Map<String, String> data = deliveryStatus[index];
-              return _statusCompleted(data['heading'], data['avatar'],
-                  data['subHeading'], data['headingSub'], 240);
+              final Map<String, String> data = stockDataList[index];
+              String imageUrl = 'http://do1r04b5laugk.cloudfront.net/${data['stockSymbol']}.png';
+              return _statusCompleted(data['stockSymbol'], imageUrl,
+                  data['sharePrice'], data['companyName'], 240);
             }),
       ),
       const SizedBox(height: 16.0),
@@ -183,11 +192,12 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
         child: ListView.builder(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.only(top: 8, bottom: 0),
-            itemCount: deliveryStatus.length,
+            itemCount: stockDataList.length,
             itemBuilder: (context, index) {
-              final Map<String, String> data = deliveryStatus[index];
-              return _statusCompleted(data['heading'], data['avatar'],
-                  data['subHeading'], data['headingSub'], 280);
+              final Map<String, String> data = stockDataList[index];
+              String imageUrl = 'http://do1r04b5laugk.cloudfront.net/${data['stockSymbol']}.png';
+              return _statusCompleted(data['stockSymbol'], imageUrl,
+                  data['sharePrice'], data['companyName'], 280);
             }),
       ),
     ]);

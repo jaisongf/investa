@@ -17,7 +17,7 @@ List<Widget> bottomNavScreen = <Widget>[
   UniverseScreen(),
   ProfileScreen(),
 ];
-const List<String> appBarTitles = ["Portfolio0", "Universe", "Profile"];
+const List<String> appBarTitles = ["Portfolio", "Universe", "Profile"];
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);

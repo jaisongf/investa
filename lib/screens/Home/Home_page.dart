@@ -17,7 +17,7 @@ List<Widget> bottomNavScreen = <Widget>[
   UniverseScreen(),
   ProfileScreen(),
 ];
-const List<String> appBarTitles = ["Portfolio", "Universe", "Profile"];
+const List<String> appBarTitles = ["Portfolio0", "Universe", "Profile"];
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -59,8 +59,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      primary: false,
-      extendBodyBehindAppBar: true,
       backgroundColor: Constant.bgDark,
       appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -97,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(height: 48.0),
+                // SizedBox(height: 48.0),
                 if (_currentIndex == 0) PortfolioScreen(),
                 if (_currentIndex == 1) UniverseScreen(),
                 if (_currentIndex == 2) ProfileScreen(),

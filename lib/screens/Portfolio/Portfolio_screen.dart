@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:realm/realm.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 import '../../config/constant.dart';
 import '../../widgets/common-textfield.dart';
 import '../../widgets/heading_six.dart';
-import '../../realm/schemas.dart';
+
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class PortfolioScreen extends StatefulWidget {
   PortfolioScreen({Key? key}) : super(key: key);
@@ -19,49 +18,25 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
 
     List<dynamic> stockDataList = [];
 
-    final app = App(AppConfiguration('devicesync-lsodp'));
-
     Future<void> fetchData() async {
+    final response = await http.get(Uri.parse('https://eu-west-2.aws.data.mongodb-api.com/app/data-chqhg/endpoint/investa_mongodb_get_stocks?apiKey=2b1b02b0a6b64bc9b817cfd414148795'));
+    if (response.statusCode == 200) {
+      setState(() {
+        //dataList = json.decode(response.body);
 
-      /**
-        final appConfig = AppConfiguration("devicesync-lsodp");
-        final app = App(appConfig);
-          
-        // Device Sync offers built-in Auth to secure Syncing data
-        final user = await app.logIn(Credentials.anonymous());
+        List<Map<String, dynamic>> jsonStockDataList = List<Map<String, dynamic>>.from(json.decode(response.body));
 
-        final config = Configuration.flexibleSync(user, [Stock.schema]);
-        final realm = Realm(config);
-        
-        // Realm Writes are transactional and Sync automatically
-        realm.write(() {
-            realm.add(Stock(ObjectId(), "1",  "1",  "1",  "1",  "1",  "1", ));
-        });
+        List<Map<String, String>> convertedStockDataList = jsonStockDataList.map((map) {
+          return map.map((key, value) => MapEntry(key, value.toString()));
+        }).toList();
 
-        // Data Synced onto a device can be queried locally
-        final allStocks = realm.all<Stock>().query("age > 5");
-       */
-
-
-
-      final response = await http.get(Uri.parse('https://eu-west-2.aws.data.mongodb-api.com/app/data-efxfb/endpoint/investa_mongodb_get_stocks?apiKey=2b1b02b0a6b64bc9b817cfd414148795'));
-     
-      if (response.statusCode == 200) {
-        setState(() {
-
-          List<Map<String, dynamic>> jsonStockDataList = List<Map<String, dynamic>>.from(json.decode(response.body));
-
-          List<Map<String, String>> convertedStockDataList = jsonStockDataList.map((map) {
-            return map.map((key, value) => MapEntry(key, value.toString()));
-          }).toList();
-
-          print('Data fetching data: ${convertedStockDataList}'); 
-          stockDataList = convertedStockDataList;
-        });
-      } else {
-        // Handle error
-        print('Error fetching data: ${response.statusCode}');
-      }
+        print('Data fetching data: ${convertedStockDataList}'); 
+        stockDataList = convertedStockDataList;
+      });
+    } else {
+      // Handle error
+      print('Error fetching data: ${response.statusCode}');
+    }
   }
 
   @override
@@ -193,7 +168,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
             itemCount: stockDataList.length,
             itemBuilder: (context, index) {
               final Map<String, String> data = stockDataList[index];
-              String imageUrl = 'http://do1r04b5laugk.cloudfront.net/${data['stockSymbol']}.png';
+              String imageUrl = 'https://do1r04b5laugk.cloudfront.net/${data['stockSymbol']}.png';
               return _statusCompleted(data['stockSymbol'], imageUrl,
                   data['sharePrice'], data['companyName'], 240);
             }),
@@ -220,7 +195,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
             itemCount: stockDataList.length,
             itemBuilder: (context, index) {
               final Map<String, String> data = stockDataList[index];
-              String imageUrl = 'http://do1r04b5laugk.cloudfront.net/${data['stockSymbol']}.png';
+              String imageUrl = 'https://do1r04b5laugk.cloudfront.net/${data['stockSymbol']}.png';
               return _statusCompleted(data['stockSymbol'], imageUrl,
                   data['sharePrice'], data['companyName'], 280);
             }),

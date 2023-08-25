@@ -14,13 +14,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-   
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+      statusBarIconBrightness: Brightness.dark,
+    ));
     return MaterialApp(
-      title: 'Wash App',
+      title: 'Investa Trading App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         textTheme: Constant.textTheme,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
       ),
       initialRoute: '/',
       onGenerateRoute: RouteGenerator.generateRoute,
